@@ -1,0 +1,6 @@
+framework module Pods_NumberDevour {
+  umbrella header "Pods-NumberDevour-umbrella.h"
+
+  export *
+  module * { export * }
+}
