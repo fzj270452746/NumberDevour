@@ -61,9 +61,38 @@ final class GatewayPortal: SKScene {
 
     // MARK: - Title Composition
 
+    private var layoutMetrics: LayoutMetrics {
+        let vp = viewportDimensions
+        let bottomMargin: CGFloat = max(vp.height * 0.05, 30)
+        let topMargin: CGFloat = vp.height * 0.05
+        let usable = vp.height - topMargin - bottomMargin
+
+        let buttonHeight: CGFloat = min(70, usable * 0.10)
+        let smallHeight: CGFloat = min(44, usable * 0.065)
+        let spacing: CGFloat = min(20, usable * 0.028)
+
+        let titleY     = bottomMargin + usable * 0.78
+        let orbY       = bottomMargin + usable * 0.60
+        let scoreY     = bottomMargin + usable * 0.48
+        let classicY   = bottomMargin + usable * 0.33
+        let sprintY    = classicY - buttonHeight - spacing
+        let auxiliaryY = sprintY - buttonHeight - spacing - 6
+
+        return LayoutMetrics(
+            titleY: titleY, orbY: orbY, scoreY: scoreY,
+            classicY: classicY, sprintY: sprintY, auxiliaryY: auxiliaryY,
+            buttonHeight: buttonHeight, smallHeight: smallHeight, spacing: spacing
+        )
+    }
+
+    private struct LayoutMetrics {
+        let titleY, orbY, scoreY, classicY, sprintY, auxiliaryY: CGFloat
+        let buttonHeight, smallHeight, spacing: CGFloat
+    }
+
     private func composeTitleSequence() {
         let centerX = viewportDimensions.width / 2
-        let topY = viewportDimensions.height * 0.72
+        let topY = layoutMetrics.titleY
 
         let decorativeLine1 = SKShapeNode(rectOf: CGSize(width: viewportDimensions.width * 0.4, height: 1.5))
         decorativeLine1.fillColor = ChromaticPalette.primaryAccent.withAlphaComponent(0.4)
@@ -103,7 +132,7 @@ final class GatewayPortal: SKScene {
         let emblem = SKSpriteNode(imageNamed: "dot-logo")
         let emblemSize: CGFloat = 90
         emblem.size = CGSize(width: emblemSize, height: emblemSize)
-        let topY = viewportDimensions.height * 0.72
+        let topY = layoutMetrics.titleY
         emblem.position = CGPoint(x: viewportDimensions.width - 50, y: topY - 10)
         emblem.zPosition = -1
         emblem.alpha = 0.6
@@ -112,7 +141,7 @@ final class GatewayPortal: SKScene {
 
     private func composeOrnamentalOrbs() {
         let centerX = viewportDimensions.width / 2
-        let orbY = viewportDimensions.height * 0.53
+        let orbY = layoutMetrics.orbY
         let sampleEchelons = [2, 4, 8, 16, 32]
         let spacing: CGFloat = 48
 
@@ -152,7 +181,7 @@ final class GatewayPortal: SKScene {
 
     private func composeApexDisplay() {
         let centerX = viewportDimensions.width / 2
-        let scoreY = viewportDimensions.height * 0.40
+        let scoreY = layoutMetrics.scoreY
 
         let apexValue = TallyLedger.sovereign.retrieveApexScore()
 
@@ -177,12 +206,12 @@ final class GatewayPortal: SKScene {
 
     private func composeModeButtons() {
         let centerX = viewportDimensions.width / 2
+        let metrics = layoutMetrics
         let buttonWidth: CGFloat = viewportDimensions.width * 0.65
-        let buttonHeight: CGFloat = 70
-        let buttonSpacing: CGFloat = 20
+        let buttonHeight = metrics.buttonHeight
 
-        let classicY = viewportDimensions.height * 0.28
-        let sprintY = classicY - buttonHeight - buttonSpacing
+        let classicY = metrics.classicY
+        let sprintY = metrics.sprintY
 
         // Classic Mode Button
         classicButton = fabricateModeCard(
@@ -262,16 +291,12 @@ final class GatewayPortal: SKScene {
 
     private func composeAuxiliaryButtons() {
         let centerX = viewportDimensions.width / 2
+        let metrics = layoutMetrics
         let buttonWidth: CGFloat = viewportDimensions.width * 0.65
-        let buttonHeight: CGFloat = 70
-        let buttonSpacing: CGFloat = 20
-
-        let classicY = viewportDimensions.height * 0.28
-        let sprintY = classicY - buttonHeight - buttonSpacing
-        let auxiliaryY = sprintY - buttonHeight - buttonSpacing - 10
+        let auxiliaryY = metrics.auxiliaryY
 
         let smallWidth = (buttonWidth - 15) / 2
-        let smallHeight: CGFloat = 44
+        let smallHeight = metrics.smallHeight
 
         pedagogueButton = fabricateAuxiliaryButton(
             inscription: "HOW TO PLAY",
